@@ -16,8 +16,6 @@ import Edit from "../../assets/Edit.svg";
 function App() {
   const history = useHistory();
   const [usersList, setUsersList] = useState([]);
-  const [user, setUser] = useState("");
-  const id = user.id
 
   useEffect(() => {
     async function getUsers() {
@@ -31,11 +29,8 @@ function App() {
     getUsers();
   }, []);
 
-  function editInfo() {
-    const newUsersList = usersList.filter((user) => user.id !== id);
-    setUsersList(setUser(), newUsersList);
-
-    history.push("/form");
+  function editInfo(user) {
+    history.push("/form", { user });
   }
 
   return (
@@ -50,7 +45,7 @@ function App() {
                 <User key={user.id}>
                   {user.first_name} {user.last_name} - {user.email} -{" "}
                   {user.phone}
-                  <Button onClick={editInfo}>
+                  <Button onClick={() => editInfo(user)}>
                     <img src={Edit} alt="edit-info" />
                   </Button>
                 </User>

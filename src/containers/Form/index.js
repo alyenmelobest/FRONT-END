@@ -1,34 +1,29 @@
-import React, { useRef, useState } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useState } from "react";
+import axios from "axios";
+import { useHistory, useLocation } from "react-router-dom";
 import { Wrapper, Container, H1, Button, Input, Box } from "./styles";
 
 function App() {
   const history = useHistory();
+  const { state } = useLocation();
+  const [firstName, setFirstName] = useState(state?.user?.first_name);
+  const [lastName, setLastName] = useState(state?.user?.last_name);
+  const [email, setEmail] = useState(state?.user?.email);
+  const [phone, setPhone] = useState(state?.user?.phone);
 
-  const first_name = useRef();
-  const last_name = useRef();
-  const email = useRef();
-  const phone = useRef();
-
-  const [usersList, setUsersList] = useState([]);
-  const [user, setUser] = useState("");
-
-  function editData() {
+  async function editData() {
     const newUser = {
-      first_name: first_name,
-      last_name: last_name,
-      email: email,
-      phone: phone,
-      user: user.id
+      first_name: firstName,
+      last_name: lastName,
+      email,
+      phone,
+      user: state?.user?.id,
     };
 
-    setUsersList([...usersList, newUser]);
-    setUser("");
- 
-    saveAndGoBack();
-  }
-
-  function saveAndGoBack() {
+    await axios.patch(
+      `http://localhost:3001/users/${state?.user?.id}`,
+      newUser
+    );
     history.push("/userslist");
   }
 
@@ -37,10 +32,27 @@ function App() {
       <Container>
         <H1>Edit Info</H1>
         <Box>
-          <Input ref={first_name} placeholder="First Name"></Input>
-          <Input ref={last_name} placeholder="Last Name"></Input>
-          <Input ref={email} placeholder="Email"></Input>
-          <Input ref={phone} placeholder="Phone"></Input>
+          <Input
+            placeholder="First Name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+          ></Input>
+          <Input
+            placeholder="Last Name"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+          ></Input>
+          <Input
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          ></Input>
+          <Input
+            placeholder="Phone"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+          ></Input>
+
           <Button onClick={editData}>Save Info</Button>
         </Box>
       </Container>
