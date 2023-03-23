@@ -1,62 +1,51 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useHistory, useLocation } from "react-router-dom";
-import { Wrapper, Container, H1, Button, Input, Box } from "./styles";
+import { useHistory } from "react-router-dom";
+import { Wrapper, Container, H1, Button, Box } from "./styles";
 
 function App() {
   const history = useHistory();
-  const { state } = useLocation();
-  const [firstName, setFirstName] = useState(state?.user?.first_name);
-  const [lastName, setLastName] = useState(state?.user?.last_name);
-  const [email, setEmail] = useState(state?.user?.email);
-  const [phone, setPhone] = useState(state?.user?.phone);
+  const [commentsList, setCommentsList] = useEffect([]);
+  const [filteredComment, setFilteredComment] = useEffect([]);
+  const [activeComment, setActiveComment] = useState(0);
 
-  async function editData() {
-    const newUser = {
-      first_name: firstName,
-      last_name: lastName,
-      email,
-      phone,
-      user: state?.user?.id,
-    };
+  useEffect(() => {
+    async function getComments() {
+      const { data: commentsList } = await axios.get(
+        "https://jsonplaceholder.typicode.com/posts/[ID]/comments"
+      );
+      setCommentsList([...commentsList, commentsList])
 
-    await axios.patch(
-      `http://localhost:3001/users/${state?.user?.id}`,
-      newUser
-    );
-    history.push("/userslist");
-  }
+    }
+    getComments()
+  }, [])
 
-  return (
-    <Wrapper>
-      <Container>
-        <H1>Edit Info</H1>
-        <Box>
-          <Input
-            placeholder="First Name"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-          ></Input>
-          <Input
-            placeholder="Last Name"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-          ></Input>
-          <Input
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          ></Input>
-          <Input
-            placeholder="Phone"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-          ></Input>
+  useEffect(() => {
+    const newFilteredComments = commentsList.filter(
+      comment => comment.category_id === activeComment
+    )
 
-          <Button onClick={editData}>Save Info</Button>
-        </Box>
-      </Container>
-    </Wrapper>
-  );
+    setFilteredComment(newFilteredComments)
+  
+  } ,[activeComment, commentsList]);
+
+function goBack() {
+  history.push("/postslist")
+}
+
+return (
+  <Wrapper>
+    <Container>
+      <H1>Comments</H1>
+      <Box>
+        {filteredComment &&
+          filteredComment.map(comment => (
+            <CardComments key={comment.id} comment={comment} />
+          ))}
+        <Button onClick={goBack}>Back</Button>
+      </Box>
+    </Container>
+  </Wrapper>
+);
 }
 export default App;

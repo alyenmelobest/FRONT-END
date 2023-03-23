@@ -3,85 +3,84 @@ import styled from "styled-components";
 export const Wrapper = styled.div`
   display: flex;
   justify-content: center;
-  flex-direction: row;
-
   height: 100%;
   min-height: 100vh;
-
-  background-color: #0e0035;
+  background-color: #fedcc5;
 `;
 
 export const Container = styled.div`
-  width: 673px;
-  height: 524px;
-  background: #1a0c3e;
-  border-radius: 56px;
-
-  margin-top: 200px;
-`;
-
-export const H1 = styled.h1`
-  display: flex;
-  justify-content: center;
-  font-weight: 600;
-  font-size: 64px;
-  line-height: 75px;
-  margin-top: 50px;
-
-  color: #ffffff;
-`;
-export const Section = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 55px 203px;
-`;
+  justify-content: center;
+  background-color: #fce7d1;
+  backdrop-filter: blur(15px);
+  border-radius: 40px;
+  padding: 120px;
 
-export const Image = styled.img`
-  width: 30px;
-  height: 30px;
-  margin-top: 30px;
-  margin-bottom: 3px;
-  margin-left: 8px;
+  a {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 14px;
+    color: #2a1e17;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  p {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 16px;
+    color: #2a1e17;
+    margin-bottom: 10px;
+  }
+`;
+export const H1 = styled.h1`
+  font-style: normal;
+  font-weight: 700;
+  font-size: 38px;
+  line-height: 46px;
+  color: #2a1e17;
+  margin-bottom: 28px;
+`;
+export const InputLabel = styled.p`
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 16px;
+  color: #2a1e17;
+  margin-bottom: 8px;
 `;
 
 export const Input = styled.input`
-  width: 271px;
+  width: 400px;
   height: 50px;
-
-  border-radius: 15px;
-  padding: 15px;
-  border: none;
-
-  font-weight: 300;
-  font-size: 24px;
-  line-height: 29px;
-
-  color: #1a0c3e;
+  background: #ffffff;
+  border-radius: 5px;
+  padding-left: 20px;
+  margin-bottom: 30px;
 `;
+
 export const Button = styled.button`
-  width: 185px;
-  height: 43px;
-  margin: 0 244px;
-
-  display: flex;
-  justify-content: center;
-
-  background: rgba(255, 255, 255, 0.47);
-  border-radius: 19px;
-  border: none;
+  width: 400px;
+  height: 50px;
   cursor: pointer;
-  outline: none;
-  text-decoration: none;
+  margin: 30px 0;
 
-  font-weight: 600;
-  font-size: 32px;
-  line-height: 39px;
+  background: #f25019;
+  border-radius: 5px;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
 
-  color: #000000;
+  color: #ffffff;
 
   &:hover {
-    background: #4b0082;
-    color: #ffffff;
+    opacity: 0.9;
   }
   &:active {
     opacity: 0.7;

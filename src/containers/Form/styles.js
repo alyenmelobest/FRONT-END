@@ -4,7 +4,6 @@ export const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   flex-direction: row;
-
   height: 100vh;
   padding: 10px;
 
@@ -18,11 +17,8 @@ export const Container = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-
   background: #ffffff;
-
   border-radius: 5px;
-
   margin: 25px;
 `;
 
