@@ -1,66 +1,80 @@
-import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import axios from "axios";
-import {
-  Wrapper,
-  Container,
-  H1,
-  Button,
-  Post,
-} from "./styles";
+import { useState, useEffect } from "react";
 
-function App() {
-  const history = useHistory();
-  const [postsList, setPostsList] = useState([]);
-  const [usersPostsList, setUsersPostsList] = useState([])
+import { Header } from "../../components/Header";
+import { Posts } from "../../components/Posts";
+import { Profile } from "../../components/Profile";
+import { ProfileDetail } from "../../components/ProfileDetail";
+import { ScrollPage } from "../../components/ScrollPage";
 
-  useEffect(() => {
-    async function getPosts() {
-      const { data: postsList } = await axios.get(
-        "https://jsonplaceholder.typicode.com/posts"
-      );
+import { PostsActions } from "./actions";
 
-      setPostsList([...postsList, postsList]);
-    }
+import * as C from "./styles";
 
-    getPosts();
-  }, []);
+function PostsPage() {
+  const [posts, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState(null);
+
+  function releaseLoading() {
+    setIsLoading(false);
+  }
 
   useEffect(() => {
-    async function getUsers() {
-      const { data: usersPostsList } = await axios.get(
-        "https://jsonplaceholder.typicode.com/users"
-      );
-      setUsersPostsList([...usersPostsList, usersPostsList]);
-
+    async function getAllPosts() {
+      setIsLoading(true);
+      setPosts(await PostsActions.fetchPosts(releaseLoading));
     }
-    getUsers();
+    getAllPosts();
   }, []);
 
-  function showComments(post) {
-    history.push("/form", { post });
+  async function handleShowComments(postId) {
+    const index = posts.findIndex((post) => post?.id === postId);
+    if (index >= 0) {
+      let updatePosts = posts;
+      if (!updatePosts[index]?.comments.length) {
+        updatePosts[index].comments = await getComments(postId);
+      }
+      updatePosts[index].showComments = !posts[index].showComments;
+      setPosts([...updatePosts]);
+    }
+  }
+
+  async function getComments(postId) {
+    setIsLoading(true);
+    return await PostsActions.fetchComments(postId, releaseLoading);
+  }
+
+  async function getUserDetail(userId) {
+    setIsLoading(true);
+    return setUser(await PostsActions.fetchUserDetail(userId, releaseLoading));
+  }
+
+  function closeDetail() {
+    setUser(null);
   }
 
   return (
-    <Wrapper>
-      <Container>
-        <H1>Posts</H1>
-        <ul>
-          <h2>{usersPostsList.username}</h2>
-          {postsList.map((post) => (
-            <>
-              <>{postsList.postsList}</>
-              <Post key={post.id}>
-                <h3>{post.title}</h3>
-                <h4>{post.body}</h4>
-                <Button onClick={() => showComments(post)}>Show Comments<i class='bx bxs-comment-detail'></i>
-                </Button>
-              </Post>
-            </>
-          ))}
-        </ul>
-      </Container>
-    </Wrapper>
+    <>
+      <C.Screen>
+        <Header isLoading={isLoading} />
+
+        <C.Container>
+          <Profile
+            profile={posts?.[0]}
+            getUserDetail={(userId) => getUserDetail(userId)}
+          />
+          <Posts
+            posts={posts}
+            handleShowComments={(postId) => handleShowComments(postId)}
+            getUserDetail={(userId) => getUserDetail(userId)}
+          />
+        </C.Container>
+        <ProfileDetail user={user} closeDetail={closeDetail} />
+
+        <ScrollPage />
+      </C.Screen>
+    </>
   );
 }
-export default App;
+
+export default PostsPage;
